@@ -1,30 +1,33 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-
-export interface Movie {
-  id: number;
-  title: string;
-  character: string[];
-}
+import { CreateMovieDto } from './dto/create-movie.dto';
+import { UpdateMovieDto } from './dto/update-movie.dto';
+import { Movie } from './entities/movie.entity';
 
 @Injectable()
 export class MoviesService {
-  private movies: Movie[] = [
-    {
-      id: 1,
-      title: '해리포터',
-      character: ['해리포터', '헤르미온느', '론'],
-    },
-    {
-      id: 2,
-      title: '반지의제왕',
-      character: ['프로도', '사우론', '간다르프'],
-    },
-    {
-      id: 3,
-      title: '스타워즈',
-      character: ['루크', '레이아', '한솔로'],
-    },
-  ];
+  private movies: Movie[] = [];
+
+  constructor() {
+    const movie1 = new Movie()
+    movie1.id = 1
+    movie1.title = '해리포터'
+    movie1.character = ['해리포터', '헤르미온느', '론']
+    movie1.genre = '판타지'
+
+    const movie2 = new Movie()
+    movie2.id = 2
+    movie2.title = '반지의제왕'
+    movie2.character = ['프로도', '사우론', '간다르프']
+    movie2.genre = '판타지'
+
+    const movie3 = new Movie()
+    movie3.id = 3
+    movie3.title = '스타워즈'
+    movie3.character = ['루크', '레이아', '한솔로']
+    movie3.genre = 'SF'
+
+    this.movies.push(movie1, movie2, movie3)
+  }
 
   getManyMovies(title?: string) {
     if(!title){
@@ -44,11 +47,10 @@ export class MoviesService {
     return movie
   }
 
-  createMovie(title: string, character: string[]){
+  createMovie(createMovieDto: CreateMovieDto) {
     const movie: Movie = {
       id: this.movies.length + 1,
-      title: '',
-      character,
+      ...createMovieDto,
     }
 
     this.movies.push(movie)
@@ -56,22 +58,14 @@ export class MoviesService {
     return movie
   }
 
-  updateMovie(id: number, title: string, character: string[]) {
+  updateMovie(id: number, updateMovieDto: UpdateMovieDto) {
     const movie = this.movies.find(movie => movie.id === id)
 
     if (!movie) {
       throw new NotFoundException('존재하지 않는 ID 값의 영화입니다.')
     }
 
-    if (!title) {
-      title = movie.title
-    }
-
-    if (!character) {
-      character = movie.character
-    }
-
-    Object.assign(movie, {title, character})
+    Object.assign(movie, updateMovieDto)
 
     return movie
   }
