@@ -8,6 +8,7 @@ import { UpdateMovieDto } from './dto/update-movie.dto';
 @UseInterceptors(ClassSerializerInterceptor)
 export class MoviesController {
   constructor(private readonly movieService: MoviesService) {}
+  
   @Get()
   getMovies(@Query('title') title?: string){
     return this.movieService.getManyMovies(title)
