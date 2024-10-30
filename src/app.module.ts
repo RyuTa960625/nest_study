@@ -6,6 +6,11 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import * as Joi from 'joi';
 import { Movie } from './movies/entities/movie.entity';
+import { MovieDetail } from './movies/entities/movie-detail.entity';
+import { DirectorModule } from './director/director.module';
+import { Director } from './director/entities/director.entity';
+import { GenreModule } from './genre/genre.module';
+import { Genre } from './genre/entities/genre.entity';
 
 @Module({
   imports: [
@@ -32,11 +37,16 @@ import { Movie } from './movies/entities/movie.entity';
         database: configService.get<string>('DB_DATABASE'),
         entities: [
           Movie,
+          MovieDetail,
+          Director,
+          Genre
         ],
         synchronize: true,
       }),
       inject: [ConfigService],
-    })
+    }),
+    DirectorModule,
+    GenreModule
   ],
   controllers: [AppController],
   providers: [AppService],
