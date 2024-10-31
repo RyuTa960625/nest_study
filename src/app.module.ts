@@ -11,6 +11,9 @@ import { DirectorModule } from './director/director.module';
 import { Director } from './director/entities/director.entity';
 import { GenreModule } from './genre/genre.module';
 import { Genre } from './genre/entities/genre.entity';
+import { AuthModule } from './auth/auth.module';
+import { UsersModule } from './users/user.module';
+import { User } from './users/entities/user.entity';
 
 @Module({
   imports: [
@@ -25,6 +28,9 @@ import { Genre } from './genre/entities/genre.entity';
         DB_USERNAME:Joi.string().required(),
         DB_PASSWORD:Joi.string().required(),
         DB_DATABASE:Joi.string().required(),
+        HASH_ROUNDS:Joi.number().required(),
+        ACCESS_TOKEN_SECRET:Joi.string().required(),
+        REFRESH_TOKEN_SECRET:Joi.string().required(),
       })
     }),
     TypeOrmModule.forRootAsync({
@@ -39,14 +45,17 @@ import { Genre } from './genre/entities/genre.entity';
           Movie,
           MovieDetail,
           Director,
-          Genre
+          Genre,
+          User,
         ],
         synchronize: true,
       }),
       inject: [ConfigService],
     }),
     DirectorModule,
-    GenreModule
+    GenreModule,
+    AuthModule,
+    UsersModule
   ],
   controllers: [AppController],
   providers: [AppService],
