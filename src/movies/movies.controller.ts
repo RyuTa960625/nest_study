@@ -1,8 +1,12 @@
-import { Controller, Delete, Get, Patch, Post, Param, Body, Query, UseInterceptors, ClassSerializerInterceptor, ParseIntPipe  } from '@nestjs/common';
+import { Controller, Delete, Get, Patch, Post, Param, Body, Query, UseInterceptors, ClassSerializerInterceptor, ParseIntPipe, UseGuards  } from '@nestjs/common';
 import { MoviesService } from './movies.service';
 import { CreateMovieDto } from './dto/create-movie.dto';
 import { UpdateMovieDto } from './dto/update-movie.dto';
 import { MovieTitleValidationPipe } from './pipe/movie-title-validation.pipe';
+import { AuthGuard } from 'src/auth/guard/auth.guard';
+import { Public } from 'src/auth/decorator/public.decorator';
+import { RBAC } from 'src/auth/decorator/rbac.decorator';
+import { Role } from 'src/users/entities/user.entity';
 
 
 @Controller('movies')
@@ -11,16 +15,19 @@ export class MoviesController {
   constructor(private readonly movieService: MoviesService) {}
   
   @Get()
+  @Public()
   getMovies(@Query('title', MovieTitleValidationPipe) title?: string){
     return this.movieService.findAll(title)
   }
 
   @Get(':id')
+  @Public()
   getMovie(@Param('id', ParseIntPipe) id: number){
     return this.movieService.findOne(id)
-  }j
+  }
 
-  @Post() 
+  @Post()
+  @RBAC(Role.admin)
   postMovie(
     @Body() body: CreateMovieDto,
   ){
@@ -28,6 +35,7 @@ export class MoviesController {
   }
 
   @Patch(':id')
+  @RBAC(Role.admin)
   patchMovie(
     @Param('id', ParseIntPipe) id: number, 
     @Body() body: UpdateMovieDto
@@ -36,6 +44,7 @@ export class MoviesController {
   }
 
   @Delete(':id')
+  @RBAC(Role.admin)
   deleteMovie(@Param('id', ParseIntPipe) id: number){
     return this.movieService.remove(id)
   }
