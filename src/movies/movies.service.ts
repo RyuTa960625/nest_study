@@ -7,6 +7,7 @@ import { DataSource, In, Like, Repository } from 'typeorm';
 import { MovieDetail } from './entities/movie-detail.entity';
 import { Director } from 'src/director/entities/director.entity';
 import { Genre } from 'src/genre/entities/genre.entity';
+import GetMoviesDto from './dto/get-movies.dto';
 
 @Injectable()
 export class MoviesService {
@@ -25,7 +26,7 @@ export class MoviesService {
     
   }
 
-  async findAll(title?: string) {
+  async findAll(dto: GetMoviesDto) {
     // if (!title) {
     //   return [
     //     await this.movieRepository.find({
@@ -42,14 +43,23 @@ export class MoviesService {
     //   relations:['director', 'genres'],
     // })
 
-    const movies = await this.movieRepository.createQueryBuilder('movie')
+    const {title, take, page} = dto;
+
+    const qb = await this.movieRepository.createQueryBuilder('movie')
       .leftJoinAndSelect('movie.director','director')
       .leftJoinAndSelect('movie.genres','genres')
 
     if (title) {
-      movies.where('movie.title LIKE :title', {title: `%${title}%`})
+      qb.where('movie.title LIKE :title', {title: `%${title}%`})
     }
-    return await movies.getManyAndCount();
+
+    if (take && page) {
+      const skip = (page - 1) * take;
+
+      qb.take(take);
+      qb.skip(skip);
+    }
+    return await qb.getManyAndCount();
   }
 
   async findOne(id: number){
@@ -110,7 +120,7 @@ export class MoviesService {
         })
         .execute()
   
-      const movieId = movieDetail.identifiers[0].id
+      const movieDetailId = movieDetail.identifiers[0].id
   
       const movie = await qr.manager.createQueryBuilder()
         .insert()
@@ -119,11 +129,13 @@ export class MoviesService {
           title: createMovieDto.title,
           character: createMovieDto.character,
           detail: {
-            id:movieId,
+            id:movieDetailId,
           },
           director,
         })
         .execute()
+
+        const movieId = movie.identifiers[0].id;
   
         await qr.manager.createQueryBuilder()
           .relation(Movie, 'genres')

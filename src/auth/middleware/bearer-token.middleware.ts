@@ -34,8 +34,8 @@ export class BearerTokenMiddleware implements NestMiddleware {
       }
 
       const secretKey = decodedPayload.type === 'refresh' ? 
-                      envVariableKeys.refreshTokenSecret : 
-                      envVariableKeys.accessTokenSecret
+                        envVariableKeys.refreshTokenSecret : 
+                        envVariableKeys.accessTokenSecret
 
       const payload = await this.jwtService.verifyAsync(token, {
         secret: this.configService.get<string>(secretKey),
@@ -45,7 +45,7 @@ export class BearerTokenMiddleware implements NestMiddleware {
       next();
 
     } catch (e) {
-      
+      console.log(e)
       next();
     }
   }
