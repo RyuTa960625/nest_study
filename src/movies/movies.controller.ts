@@ -1,4 +1,4 @@
-import { Controller, Delete, Get, Patch, Post, Param, Body, Query, UseInterceptors, ClassSerializerInterceptor, ParseIntPipe, UseGuards  } from '@nestjs/common';
+import { Controller, Delete, Get, Patch, Post, Param, Body, Query, UseInterceptors, ClassSerializerInterceptor, ParseIntPipe, UseGuards, Request  } from '@nestjs/common';
 import { MoviesService } from './movies.service';
 import { CreateMovieDto } from './dto/create-movie.dto';
 import { UpdateMovieDto } from './dto/update-movie.dto';
@@ -8,6 +8,7 @@ import { Public } from 'src/auth/decorator/public.decorator';
 import { RBAC } from 'src/auth/decorator/rbac.decorator';
 import { Role } from 'src/users/entities/user.entity';
 import GetMoviesDto from './dto/get-movies.dto';
+import { TransactionInterceptor } from 'src/common/interceptor/transaction.interceptor';
 
 
 @Controller('movies')
@@ -29,10 +30,12 @@ export class MoviesController {
 
   @Post()
   @RBAC(Role.admin)
+  @UseInterceptors(TransactionInterceptor)
   postMovie(
     @Body() body: CreateMovieDto,
+    @Request() req,
   ){
-    return this.movieService.create(body)
+    return this.movieService.create(body, req)
   }
 
   @Patch(':id')

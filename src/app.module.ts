@@ -16,9 +16,10 @@ import { UsersModule } from './users/user.module';
 import { User } from './users/entities/user.entity';
 import { envVariableKeys } from './common/const/env.const';
 import { BearerTokenMiddleware } from './auth/middleware/bearer-token.middleware';
-import { APP_GUARD } from '@nestjs/core';
+import { APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
 import { AuthGuard } from './auth/guard/auth.guard';
 import { RBACGuard } from './auth/guard/rbac.guard';
+import { ResponseTimeInterceptor } from './common/interceptor/response-time.interceptor';
 
 @Module({
   imports: [
@@ -63,13 +64,18 @@ import { RBACGuard } from './auth/guard/rbac.guard';
     UsersModule
   ],
   controllers: [AppController],
-  providers: [AppService,{
-    provide: APP_GUARD,
-    useClass: AuthGuard,
-  }, {
-    provide: APP_GUARD,
-    useClass: RBACGuard,
-  }]
+  providers: [AppService,
+    {
+      provide: APP_GUARD,
+      useClass: AuthGuard,
+    }, {
+      provide: APP_GUARD,
+      useClass: RBACGuard,
+    }, {
+      provide: APP_INTERCEPTOR,
+      useClass: ResponseTimeInterceptor,
+    }
+  ]
 })
 export class AppModule implements NestModule{
   configure(consumer: MiddlewareConsumer) {
