@@ -35,7 +35,7 @@ export class MoviesController {
     @Body() body: CreateMovieDto,
     @Request() req,
   ){
-    return this.movieService.create(body, req)
+    return this.movieService.create(body, req.queryRunner)
   }
 
   @Patch(':id')
