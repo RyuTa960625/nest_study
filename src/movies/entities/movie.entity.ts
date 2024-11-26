@@ -3,6 +3,7 @@ import { BaseTable } from "../../common/entities/base-table.entity"
 import { MovieDetail } from "./movie-detail.entity";
 import { Director } from "src/director/entities/director.entity";
 import { Genre } from "src/genre/entities/genre.entity";
+import { Transform } from "class-transformer";
 
 // ManyToOne Director -> 감독은 여러개의 영화를 가질 수 있음
 // ManyToMany Genre -> 영화는 여러개의 장르를 가잘 수 있고 장르는 여러개의 영화를 가질 수 있음
@@ -47,6 +48,10 @@ export class Movie extends BaseTable{
   )
   @JoinColumn()
   detail: MovieDetail;
+
+  @Column()
+  @Transform(({value}) => `http://localhost:3000/${value}`)
+  movieFilePath: string;
 
   @ManyToOne(
     () => Director,
