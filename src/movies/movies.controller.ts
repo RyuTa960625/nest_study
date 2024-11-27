@@ -11,6 +11,9 @@ import GetMoviesDto from './dto/get-movies.dto';
 import { TransactionInterceptor } from 'src/common/interceptor/transaction.interceptor';
 import { FileFieldsInterceptor, FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
 import { MovieFilePipe } from './pipe/movie-file.pipe';
+import { UserId } from 'src/users/decorator/user-id.decorator';
+import { QueryRunner } from 'src/common/decorator/query-runner.decorator';
+import { QueryRunner as QR } from 'typeorm';
 
 
 @Controller('movie')
@@ -35,11 +38,12 @@ export class MoviesController {
   @UseInterceptors(TransactionInterceptor)
   postMovie(
     @Body() body: CreateMovieDto,
-    @Request() req,
+    @QueryRunner() queryRunner: QR,
+    @UserId() userId: number,
   ){
 
 
-    return this.movieService.create(body, req.queryRunner)
+    return this.movieService.create(body, userId, queryRunner)
   }
 
   @Patch(':id')

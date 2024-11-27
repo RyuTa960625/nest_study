@@ -4,6 +4,7 @@ import { MovieDetail } from "./movie-detail.entity";
 import { Director } from "src/director/entities/director.entity";
 import { Genre } from "src/genre/entities/genre.entity";
 import { Transform } from "class-transformer";
+import { User } from "src/users/entities/user.entity";
 
 // ManyToOne Director -> 감독은 여러개의 영화를 가질 수 있음
 // ManyToMany Genre -> 영화는 여러개의 장르를 가잘 수 있고 장르는 여러개의 영화를 가질 수 있음
@@ -14,6 +15,12 @@ export class Movie extends BaseTable{
 
   @PrimaryGeneratedColumn()
   id: number;
+
+  @ManyToOne(
+    () => User,
+    (user) => user.createdMovies,
+  )
+  creator: User;
 
   @Column({
     unique: true,
