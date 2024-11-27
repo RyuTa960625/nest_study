@@ -11,6 +11,8 @@ import { MulterModule } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { join } from 'path';
 import {v4} from 'uuid'
+import { User } from 'src/users/entities/user.entity';
+import { MovieUserLike } from './entities/movie-user-like.entity';
 
 @Module({
   imports:[
@@ -20,6 +22,8 @@ import {v4} from 'uuid'
       MovieDetail,
       Director,
       Genre,
+      User,
+      MovieUserLike,
     ]),
     CommonModule,
     // MulterModule.register({

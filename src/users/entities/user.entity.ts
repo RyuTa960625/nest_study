@@ -1,6 +1,7 @@
 import { ClassSerializerInterceptor, UseInterceptors } from "@nestjs/common";
 import { Exclude } from "class-transformer";
 import { BaseTable } from "src/common/entities/base-table.entity";
+import { MovieUserLike } from "src/movies/entities/movie-user-like.entity";
 import { Movie } from "src/movies/entities/movie.entity";
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 
@@ -37,4 +38,10 @@ export class User extends BaseTable{
     (movie) => movie.creator
   )
   createdMovies: Movie[];
+
+  @OneToMany(
+    () => MovieUserLike,
+    (mul) => mul.user,
+  )
+  likedMovies: MovieUserLike[];
 }
