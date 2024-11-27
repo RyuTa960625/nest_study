@@ -175,5 +175,7 @@ export class AuthService {
     await this.cacheManager.set(`BLOCK_TOKEN_${token}`, payload,
       Math.max(differenceInSeconds * 1000, 1)
     )
+
+    return true
   }
 }
