@@ -13,6 +13,7 @@ import { join } from 'path';
 import {v4} from 'uuid'
 import { User } from 'src/users/entities/user.entity';
 import { MovieUserLike } from './entities/movie-user-like.entity';
+import { CacheModule } from '@nestjs/cache-manager';
 
 @Module({
   imports:[

@@ -25,6 +25,9 @@ import { QueryFailedExceptionFilter } from './common/filter/query-failed.filter'
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 import { MovieUserLike } from './movies/entities/movie-user-like.entity';
+import { CacheModule } from '@nestjs/cache-manager';
+import { Throttle } from './common/decorator/throttle.decorator';
+import { ThrottleInterceptor } from './common/interceptor/throttle.interceptor';
 
 @Module({
   imports: [
@@ -71,25 +74,37 @@ import { MovieUserLike } from './movies/entities/movie-user-like.entity';
     ServeStaticModule.forRoot({
       rootPath: join(process.cwd(), 'public'),
       serveRoot: '/public/'
-    })
+    }),
+    CacheModule.register({
+      ttl: 0,
+      isGlobal: true,
+    }),
   ],
   controllers: [AppController],
   providers: [AppService,
     {
       provide: APP_GUARD,
       useClass: AuthGuard,
-    }, {
+    }, 
+    {
       provide: APP_GUARD,
       useClass: RBACGuard,
-    }, {
+    }, 
+    {
       provide: APP_INTERCEPTOR,
       useClass: ResponseTimeInterceptor,
-    }, {
-      provide: APP_FILTER,
-      useClass: ForbiddenExceptionFilter,
-    }, {
+    }, 
+    // {
+    //   provide: APP_FILTER,
+    //   useClass: ForbiddenExceptionFilter,
+    // }, 
+    {
       provide: APP_FILTER,
       useClass: QueryFailedExceptionFilter,
+    }, 
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: ThrottleInterceptor,
     }
 
   ]
