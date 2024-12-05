@@ -7,6 +7,7 @@ import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { envVariableKeys } from 'src/common/const/env.const';
 import { Cache, CACHE_MANAGER } from '@nestjs/cache-manager';
+import { UsersService } from 'src/users/user.service';
 
 
 @Injectable()
@@ -14,6 +15,7 @@ export class AuthService {
   constructor(
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
+    private readonly userService: UsersService,
     private readonly configService: ConfigService,
     private readonly jwtService: JwtService,
     @Inject(CACHE_MANAGER)
@@ -95,27 +97,9 @@ export class AuthService {
   async register(rawToken: string){
     const {email, password} = this.parseBasicToken(rawToken)
 
-    const user = await this.userRepository.findOne({
-      where: {
-        email,
-      }
-    })
-
-    if (user) {
-      throw new BadRequestException('이미 사용중인 email입니다.')
-    }
-
-    const hash = await bcrypt.hash(password, this.configService.get<number>(envVariableKeys.hashRound))
-
-    await this.userRepository.save({
+    return this.userService.create({
       email,
-      password: hash,
-    })
-
-    return await this.userRepository.findOne({
-      where: {
-        email
-      }
+      password,
     })
   }
 

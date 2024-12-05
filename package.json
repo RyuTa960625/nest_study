@@ -17,7 +17,10 @@
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:e2e": "jest --config ./test/jest-e2e.json"
+    "test:e2e": "jest --config ./test/jest-e2e.json",
+    "test:users": "jest --testPathPattern=src/users --coverage --collectCoverageFrom=src/users/**",
+    "test:watch:users": "jest --watch --testPathPattern=src/users --coverage --collectCoverageFrom=src/users/**"
+
   },
   "dependencies": {
     "@nestjs/cache-manager": "^2.3.0",
@@ -82,7 +85,9 @@
       "json",
       "ts"
     ],
-    "rootDir": "src",
+    "root": [
+      "src"
+    ],
     "testRegex": ".*\\.spec\\.ts$",
     "transform": {
       "^.+\\.(t|j)s$": "ts-jest"
@@ -90,7 +95,15 @@
     "collectCoverageFrom": [
       "**/*.(t|j)s"
     ],
-    "coverageDirectory": "../coverage",
-    "testEnvironment": "node"
+    "coveragePathIgnorePatterns": [
+      "module.ts",
+      "dto.ts",
+      "entity.ts"
+    ],
+    "coverageDirectory": "./coverage",
+    "testEnvironment": "node",
+    "moduleNameMapper": {
+      "src/(.*)" : "<rootDir>/src/$1"
+    }
   }
 }
