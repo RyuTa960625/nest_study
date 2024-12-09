@@ -19,8 +19,13 @@
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
     "test:users": "jest --testPathPattern=src/users --coverage --collectCoverageFrom=src/users/**",
-    "test:watch:users": "jest --watch --testPathPattern=src/users --coverage --collectCoverageFrom=src/users/**"
-
+    "test:watch:users": "jest --watch --testPathPattern=src/users --coverage --collectCoverageFrom=src/users/**",
+    "test:auth": "jest --testPathPattern=src/auth --coverage --collectCoverageFrom=src/auth/**",
+    "test:auth:watch": "jest --watch --testPathPattern=src/auth --coverage --collectCoverageFrom=src/auth/**",
+    "test:director": "jest --testPathPattern=src/director --coverage --collectCoverageFrom=src/director/**",
+    "test:director:watch": "jest --watch --testPathPattern=src/director --coverage --collectCoverageFrom=src/director/**",
+    "test:genre": "jest --testPathPattern=src/genre --coverage --collectCoverageFrom=src/genre/**",
+    "test:genre:watch": "jest --watch --testPathPattern=src/genre --coverage --collectCoverageFrom=src/genre/**"
   },
   "dependencies": {
     "@nestjs/cache-manager": "^2.3.0",
