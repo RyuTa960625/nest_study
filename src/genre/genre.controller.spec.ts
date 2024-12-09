@@ -24,7 +24,7 @@ describe('GenreController', () => {
         {
           provide: GenreService,
           useValue: mockGenreService,
-        }
+        },
       ],
     }).compile();
 
@@ -32,30 +32,32 @@ describe('GenreController', () => {
     service = module.get<GenreService>(GenreService);
   });
 
-  afterEach(()=>{
+  afterEach(() => {
     jest.clearAllMocks();
-  })
+  });
 
   it('should be defined', () => {
     expect(controller).toBeDefined();
   });
 
-  describe('create', ()=>{
-    it('should call genreService.create with correct parameter', async ()=>{
+  describe('create', () => {
+    it('should call genreService.create with correct parameter', async () => {
       const createGenreDto = {
         name: 'Fantasy',
       };
-      const result = {id: 1, ...createGenreDto};
+      const result = { id: 1, ...createGenreDto };
 
-      jest.spyOn(service, 'create').mockResolvedValue(result as CreateGenreDto & Genre);
+      jest
+        .spyOn(service, 'create')
+        .mockResolvedValue(result as CreateGenreDto & Genre);
 
       expect(controller.create(createGenreDto)).resolves.toEqual(result);
       expect(service.create).toHaveBeenCalledWith(createGenreDto);
     });
   });
 
-  describe('findAll', ()=>{
-    it('should call genreService.findAll and return an array of genres', async ()=>{
+  describe('findAll', () => {
+    it('should call genreService.findAll and return an array of genres', async () => {
       const result = [
         {
           id: 1,
@@ -65,11 +67,11 @@ describe('GenreController', () => {
       jest.spyOn(service, 'findAll').mockResolvedValue(result as Genre[]);
       expect(controller.findAll()).resolves.toEqual(result);
       expect(service.findAll).toHaveBeenCalled();
-    })
+    });
   });
 
-  describe('findOne', ()=>{
-    it('should call genreService.findOne with correct id and return the genre', async ()=>{
+  describe('findOne', () => {
+    it('should call genreService.findOne with correct id and return the genre', async () => {
       const id = 1;
       const result = {
         id: 1,
@@ -83,13 +85,13 @@ describe('GenreController', () => {
     });
   });
 
-  describe('update', ()=>{
-    it('should call genreService.update with correct parameters and return updated genre', async()=>{
+  describe('update', () => {
+    it('should call genreService.update with correct parameters and return updated genre', async () => {
       const id = 1;
       const updateGenreDto = {
         name: 'UpdatedFantasy',
       };
-      const result = {id: 1, ...updateGenreDto};
+      const result = { id: 1, ...updateGenreDto };
 
       jest.spyOn(service, 'update').mockResolvedValue(result as Genre);
 
@@ -98,14 +100,14 @@ describe('GenreController', () => {
     });
   });
 
-  describe('remove', ()=>{
-    it('should call genreService.remove with correct id and return id of the removed genre', async ()=>{
+  describe('remove', () => {
+    it('should call genreService.remove with correct id and return id of the removed genre', async () => {
       const id = 1;
 
       jest.spyOn(service, 'remove').mockResolvedValue(id);
-      
+
       expect(controller.remove(id)).resolves.toBe(id);
       expect(service.remove).toHaveBeenCalledWith(id);
-    })
-  })
+    });
+  });
 });

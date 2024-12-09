@@ -25,7 +25,7 @@ describe('GenreService', () => {
         {
           provide: getRepositoryToken(Genre),
           useValue: mockGenreRepository,
-        }
+        },
       ],
     }).compile();
 
@@ -35,7 +35,7 @@ describe('GenreService', () => {
 
   afterAll(() => {
     jest.clearAllMocks();
-  })
+  });
 
   it('should be defined', () => {
     expect(service).toBeDefined();
@@ -88,7 +88,7 @@ describe('GenreService', () => {
     it('should throw a NotFoundException if genre is not found', async () => {
       jest.spyOn(repository, 'findOne').mockResolvedValue(null);
       await expect(service.findOne(1)).rejects.toThrow(NotFoundException);
-    })
+    });
   });
   describe('update', () => {
     it('should update and return the genre if it exists', async () => {
@@ -104,32 +104,38 @@ describe('GenreService', () => {
         ...updateGenreDto,
       };
 
-      jest.spyOn(repository, 'findOne')
+      jest
+        .spyOn(repository, 'findOne')
         .mockResolvedValueOnce(existingGenre as Genre)
         .mockResolvedValueOnce(updatedGenre as Genre);
 
       const result = await service.update(1, updateGenreDto);
 
       expect(repository.findOne).toHaveBeenCalledWith({
-        where:{
+        where: {
           id: 1,
         },
       });
-      expect(repository.update).toHaveBeenCalledWith({
-        id: 1
-      }, updateGenreDto);
+      expect(repository.update).toHaveBeenCalledWith(
+        {
+          id: 1,
+        },
+        updateGenreDto,
+      );
       expect(result).toEqual(updatedGenre);
     });
 
-    it('should throw a NotFoundException if genre to update does not exist', async ()=>{
+    it('should throw a NotFoundException if genre to update does not exist', async () => {
       jest.spyOn(repository, 'findOne').mockResolvedValue(null);
 
-      await expect(service.update(1, {name: 'Updated Fantasy'})).rejects.toThrow(NotFoundException);
+      await expect(
+        service.update(1, { name: 'Updated Fantasy' }),
+      ).rejects.toThrow(NotFoundException);
     });
   });
 
-  describe('remove', ()=>{
-    it('should delete a genre and return the id', async ()=>{
+  describe('remove', () => {
+    it('should delete a genre and return the id', async () => {
       const genre = {
         id: 1,
         name: 'Fantasy',
@@ -142,16 +148,16 @@ describe('GenreService', () => {
       expect(repository.findOne).toHaveBeenCalledWith({
         where: {
           id: 1,
-        }
+        },
       });
       expect(repository.delete).toHaveBeenCalledWith(1);
       expect(result).toBe(1);
     });
 
-    it('should throw a NotFoundException if genre to delete does not exist', async ()=>{
+    it('should throw a NotFoundException if genre to delete does not exist', async () => {
       jest.spyOn(repository, 'findOne').mockResolvedValue(null);
-      
+
       await expect(service.remove(1)).rejects.toThrow(NotFoundException);
-    })
+    });
   });
 });
